@@ -127,6 +127,8 @@
         width 56px
         height 54px
         line-height: 14px
+        &.current
+          color red
         .icon
           display inline-block
           vertical-align top
