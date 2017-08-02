@@ -87,7 +87,6 @@
           this.scrollY = Math.abs(Math.round(pos.y))
         })
       },
-      // dd
       _calculateHeight () {
         let els = this.$refs['foods-scroll'].getElementsByClassName('js-foods-list')
         let height = 0
