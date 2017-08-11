@@ -2,15 +2,20 @@
     <div class="shopcart-wrap">
       <div class="content">
         <div class="content-left">
-          <div class="icon-box">
+          <div class="icon-box" :class="{ 'highlight': totalCount > 0}">
             <div class="icon">
               <span class="icon-shopping_cart"></span>
             </div>
+            <span v-show="totalCount > 0" class="count">{{totalCount}}</span>
           </div>
-          <div class="price">￥0</div>
+          <div class="price" :class="{ 'highlight': totalCount > 0}">¥{{ totalPrice }}</div>
           <div class="desc">另需配送费¥{{deliveryPrice}}元</div>
         </div>
-        <div class="content-right"></div>
+        <div class="content-right">
+          <div class="pay" :class="payClass">
+            {{payDesc}}
+          </div>
+        </div>
       </div>
     </div>
 </template>
@@ -25,6 +30,54 @@
       minPrice: {
         type: Number,
         default: 0
+      },
+      selectedFoods: {
+        type: Array,
+        default: () => {
+          return [
+            {
+              price: 10,
+              count: 1
+            },
+            {
+              price: 15,
+              count: 0
+            }
+          ]
+        }
+      }
+    },
+    computed: {
+      totalPrice () {
+        let totalPrice = 0
+        this.selectedFoods.forEach((food) => {
+          totalPrice += food.price * food.count
+        })
+        return totalPrice
+      },
+      totalCount () {
+        let totalCount = 0
+        this.selectedFoods.forEach((food) => {
+          totalCount += food.count
+        })
+        return totalCount
+      },
+      payDesc () {
+        if (this.totalPrice === 0) {
+          return '¥' + this.minPrice + '元起送'
+        } else if (this.minPrice > this.totalPrice) {
+          let diff = this.minPrice - this.totalPrice
+          return `还差¥${diff}元起送`
+        } else if (this.minPrice <= this.totalPrice) {
+          return '去结算'
+        }
+      },
+      payClass () {
+        if (this.minPrice > this.totalPrice) {
+          return 'not-enough'
+        } else {
+          return 'enough'
+        }
       }
     }
   }
@@ -42,6 +95,7 @@
     display: flex
     background-color: #141d27
     font-size 0
+    color rgb(255,255,255,0.4)
     .content-left
       flex 1
       .icon-box
@@ -57,6 +111,24 @@
         vertical-align: top
         border-radius: 50%
         background-color: #141d27
+        &.highlight 
+          .icon
+            background-color #00a0dc
+            .icon-shopping_cart
+              color #ffffff
+        .count
+          position absolute
+          top 0
+          right 0
+          width 24px 
+          height 16px
+          text-align center
+          line-height 16px
+          font-size 10px
+          color #fff
+          
+          border-radius 16px
+          background-color red
         .icon
           width 100%
           height 100%
@@ -76,7 +148,9 @@
         line-height 24px
         font-size 16px
         font-weight 700
-        color rgba(255,255,255, 0.4) 
+        color rgba(255,255,255, 0.4)
+        &.highlight
+          color: #fff
       .desc
         display inline-block
         vertical-align top
@@ -86,10 +160,17 @@
         color rgba(255,255,255, 0.4)
     .content-right
       flex 0 0 105px
-      padding 0 8px
       width 105px
-      font-weight 700
-      font-size 16px
-      line-height 48px
-      color rgb(255,255,255,0.4) 
+      .pay
+        height 48px
+        line-height 48px
+        text-align center
+        font-size 12px
+        color rgba(255,255,255, 0.4)
+        font-weight 700
+        &.not-enough
+          background-color #2b333b
+        &.enough
+          background-color #00b43c
+          color #fff
 </style>
