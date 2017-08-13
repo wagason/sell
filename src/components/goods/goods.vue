@@ -26,23 +26,28 @@
                   <div class="price">
                     <span class="now">￥<span class="num">{{food.price}}</span></span><span v-show="food.oldPrice" class="old">￥<span class="num">{{food.oldPrice}}</span></span>
                   </div>
+                  <div class="foodcontrol-wrap">
+                    <foodcontrol :food="food"></foodcontrol>
+                  </div>
                 </div>
               </li>
             </ul>
           </li>
         </ul>
       </div>
-      <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+      <shopcart :selectedFoods="selectedFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
     </div>
 </template>
 
 <script>
   import BScroll from 'better-scroll'
   import shopcart from '@/components/shopcart/shopcart.vue'
+  import foodcontrol from '@/components/foodcontrol/foodcontrol.vue'
   const ERR_OK = 0
   export default {
     components: {
-      shopcart
+      shopcart,
+      foodcontrol
     },
     props: {
       seller: {
@@ -67,6 +72,17 @@
           }
         }
         return 0
+      },
+      selectedFoods () {
+        let foods = []
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count && food.count > 0) {
+              foods.push(food)
+            }
+          })
+        })
+        return foods
       }
     },
     created () {
@@ -86,7 +102,7 @@
     methods: {
       _initScroll () {
         this.$menuScroll = new BScroll(this.$refs['menu-scroll'], { click: true })
-        this.$foodsScroll = new BScroll(this.$refs['foods-scroll'], { probeType: 3 })
+        this.$foodsScroll = new BScroll(this.$refs['foods-scroll'], { probeType: 3, click: true })
         this.$foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y))
         })
@@ -132,7 +148,9 @@
         height 54px
         line-height: 14px
         &.current
-          color red
+          font-weight 700
+          color rgb(7, 17, 27)
+          background-color #fff
         .icon
           display inline-block
           vertical-align top
@@ -184,6 +202,7 @@
             display block
         .content
           flex 1
+          position relative
           .name
             margin 2px 0px 8px
             line-height 14px
@@ -215,5 +234,9 @@
               text-decoration line-through
               .num
                 font-weight 700
-          
+          .foodcontrol-wrap
+            position absolute
+            right 0
+            bottom 0
+            
 </style>
