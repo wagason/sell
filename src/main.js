@@ -5,11 +5,12 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-
+// import Vuex from 'vuex'
 import 'common/stylus/index.styl'
 
-Vue.use(VueAxios, axios)
+// Vue.use(Vuex);
 
+Vue.use(VueAxios, axios)
 // 关闭生产模式下给出的提示
 Vue.config.productionTip = false
 

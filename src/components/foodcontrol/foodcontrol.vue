@@ -1,7 +1,7 @@
 <template>
   <div class="foodcontrol">
     <transition name="move">
-      <span v-show="food.count" class="sub" @click="subFood">
+      <span v-show="food.count>0" class="sub" @click="subFood">
         <span class="inner icon-remove_circle_outline"></span>
       </span>
     </transition>
@@ -12,6 +12,7 @@
 
 <script>
   import Vue from 'vue'
+  import bus from '@/common/bus.js'
   export default {
     props: {
       food: {
@@ -24,6 +25,9 @@
     methods: {
       addFood () {
         if (!event._constructed) return
+
+        bus.$emit('addFood', event.target)
+
         if (this.food.count === undefined) {
           Vue.set(this.food, 'count', 1)
         } else {
